@@ -55,6 +55,30 @@ const extractObjectKeys = (object: any) => {
   return objectKeys;
 };
 
+const sortData = (
+  data: any,
+  sortKey: string,
+  sortingDirection: SortingDirection
+) => {
+  data.sort((a: any, b: any) => {
+    const relevantValueA = a[sortKey];
+    const relevantValueB = b[sortKey];
+
+    if (
+      sortingDirection === SortingDirection.UNSORTED ||
+      sortingDirection === SortingDirection.ASCENDING
+    ) {
+      if (relevantValueA < relevantValueB) return -1;
+      if (relevantValueA > relevantValueB) return 1;
+      return 0;
+    } else {
+      if (relevantValueA > relevantValueB) return -1;
+      if (relevantValueA < relevantValueB) return 1;
+      return 0;
+    }
+  });
+};
+
 
 function App() {
   return (
