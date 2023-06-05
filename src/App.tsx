@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import axios from "axios";
 
-type Person = any;
 type Location = any;
 
 enum SortingDirection {
@@ -97,7 +96,7 @@ const getFilteredRows = (rows: any[], filterKey: string) => {
   });
 };
 
-function App() {
+export default function App() {
   const [people, setPeople] = useState([]);
   const [flattenedLocations, setFlattenedLocations] = useState({
     headers: [],
@@ -144,8 +143,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Hello CodeSandbox</h1>
-      <h2>Start editing to see some magic happen!</h2>
+      <h1>Sorted list</h1>
       <input
         value={inputFieldValue}
         onChange={(e) => {
@@ -183,5 +181,5 @@ function App() {
       </table>
     </div>
   );
+}
 
-export default App;
