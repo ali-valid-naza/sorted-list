@@ -79,6 +79,23 @@ const sortData = (
   });
 };
 
+const getNextSortingDirection = (sortingDirection: SortingDirection) => {
+  if (
+    sortingDirection === SortingDirection.UNSORTED ||
+    sortingDirection === SortingDirection.ASCENDING
+  ) {
+    return SortingDirection.DESCENDING;
+  }
+  return SortingDirection.ASCENDING;
+};
+
+const getFilteredRows = (rows: any[], filterKey: string) => {
+  return rows.filter((row: any) => {
+    return Object.values(row).some((s) =>
+      ("" + s).toLowerCase().includes(filterKey)
+    );
+  });
+};
 
 function App() {
   return (
