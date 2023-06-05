@@ -98,11 +98,90 @@ const getFilteredRows = (rows: any[], filterKey: string) => {
 };
 
 function App() {
+  const [people, setPeople] = useState([]);
+  const [flattenedLocations, setFlattenedLocations] = useState({
+    headers: [],
+    data: []
+  });
+  const [sortingDirections, setSortingDirections] = useState({});
+  const [inputFieldValue, setInputFieldValue] = useState("");
+
+  const sortColumn = (sortKey) => {
+    const newFlattenedLocations = {
+      ...flattenedLocations,
+      data: [...flattenedLocations.data]
+    };
+
+    const currentSortingDirection = sortingDirections[sortKey];
+
+    sortData(newFlattenedLocations.data, sortKey, currentSortingDirection);
+    const nextSortingDirection = getNextSortingDirection(
+      currentSortingDirection
+    );
+
+    const newSortingDirections = { ...sortingDirections };
+    newSortingDirections[sortKey] = nextSortingDirection;
+
+    setFlattenedLocations(newFlattenedLocations);
+    setSortingDirections(newSortingDirections);
+  };
+
+  useEffect(() => {
+    fetchData().then((apiPeople) => {
+      setPeople(apiPeople);
+      const ourFlattenedLocations = flattenLocations(
+        apiPeople.map(({ location }) => location)
+      );
+      setFlattenedLocations(ourFlattenedLocations);
+      const { headers } = ourFlattenedLocations;
+      const ourSortingDirections = {};
+      for (const header of headers) {
+        ourSortingDirections[header] = SortingDirection.UNSORTED;
+      }
+      setSortingDirections(ourSortingDirections);
+    });
+  }, []);
+
   return (
     <div className="App">
-
+      <h1>Hello CodeSandbox</h1>
+      <h2>Start editing to see some magic happen!</h2>
+      <input
+        value={inputFieldValue}
+        onChange={(e) => {
+          setInputFieldValue(e.target.value);
+        }}
+      />
+      <table>
+        <thead>
+          <tr>
+            {flattenedLocations.headers.map(
+              (locationString: string, locationIdx) => (
+                <th
+                  key={locationIdx}
+                  onClick={() => {
+                    sortColumn(locationString);
+                  }}
+                >
+                  {locationString}
+                </th>
+              )
+            )}
+          </tr>
+        </thead>
+        <tbody>
+          {getFilteredRows(flattenedLocations.data, inputFieldValue).map(
+            (location: any, locationIdx) => (
+              <tr key={locationIdx}>
+                {flattenedLocations.headers.map((header, headerIdx) => (
+                  <td key={headerIdx}>{location[header]}</td>
+                ))}
+              </tr>
+            )
+          )}
+        </tbody>
+      </table>
     </div>
   );
-}
 
 export default App;
